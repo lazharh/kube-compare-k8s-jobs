@@ -14,10 +14,6 @@ FROM ${BASE_IMAGE}
 COPY --from=0 /usr/local/bin/kubectl-cluster_compare /usr/local/bin/kubectl-cluster_compare
 COPY --from=0 /cnf-features-deploy/ztp/kube-compare-reference /kube-compare-reference
 
-COPY custom /kube-compare-reference/custom
-COPY metadata-lb.yaml /kube-compare-reference/
-COPY metadata-mb.yaml /kube-compare-reference/
-
 COPY reporter-hub.sh reporter-hub.sh
 COPY reporter-spoke.sh reporter-spoke.sh
 RUN chmod +x reporter-hub.sh
