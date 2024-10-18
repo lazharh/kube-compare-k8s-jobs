@@ -4,6 +4,11 @@ On the hub cluster, create k8s job for each spoke cluster to run cluster-compare
 
 If only have permission for spoke cluster and not hub cluster, create k8s job on spoke cluster to run cluster-compare tool and log the output.
 
+The source of the kube-compare tool: [kube-compare](https://github.com/openshift/kube-compare.git)
+The source of the kube-compare-reference: [cnf-features-deploy](https://github.com/openshift-kni/cnf-features-deploy/tree/master/ztp/kube-compare-reference)
+
+The image/script in this repo was created based on snapshot of the repos(main branch) above at the time when it was built(2024/10/18). 
+
 ## Usage
 
 Create SA and ClusterRoleBinding on either hub or spoke cluster depends on what permission you have or the lab situation:
