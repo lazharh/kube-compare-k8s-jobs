@@ -21,6 +21,8 @@ oc apply -f cluster-role-binding.yaml
 
 ### K8s jobs on Hub cluster
 
+This will create jobs for all the managed cluster on the hub:
+
 ```
 # ./create-jobs-hub.sh
 
