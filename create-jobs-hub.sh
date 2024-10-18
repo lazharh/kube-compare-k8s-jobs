@@ -11,7 +11,7 @@ usage(){
 
 delete_job(){
   spoke=$1
-  oc delete job cluster-compare-reporter-$spoke
+  oc delete job kube-compare-job-$spoke
 }
 
 create_job(){
@@ -20,13 +20,13 @@ create_job(){
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cluster-compare-reporter-$spoke
+  name: kube-compare-job-$spoke
   namespace: default
 spec:
   template:
     spec:
       restartPolicy: Never
-      serviceAccountName: cluster-compare-reporter-sa
+      serviceAccountName: kube-compare-job-sa
       containers:
         - name: reporter
           image: $image

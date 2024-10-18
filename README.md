@@ -24,13 +24,13 @@ cat <<EOF | oc apply -f -
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cluster-compare-reporter-$spoke
+  name: kube-compare-job-$spoke
   namespace: default
 spec:
   template:
     spec:
       restartPolicy: Never
-      serviceAccountName: cluster-compare-reporter-sa
+      serviceAccountName: kube-compare-job-sa
       containers:
         - name: reporter
           image: $image
@@ -48,7 +48,7 @@ Check logs:
 ```
 # oc get job
 
-# oc logs -f cluster-compare-reporter-sno132-crqm6
+# oc logs -f kube-compare-job-sno132-crqm6
 ---------------------- comparing cluster: sno132 with metadata.yaml ----------------------
 NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
 version   4.16.15   True        False         18d     Cluster version is 4.16.15
@@ -78,12 +78,12 @@ Quicker way to create jobs for all managed clusters:
 
 # oc get jobs
 NAME                              COMPLETIONS   DURATION   AGE
-cluster-compare-reporter-sno131   1/1           8s         12m
-cluster-compare-reporter-sno132   1/1           7s         12m
-cluster-compare-reporter-sno133   1/1           6s         12m
-cluster-compare-reporter-sno146   1/1           6s         12m
+kube-compare-job-sno131   1/1           8s         12m
+kube-compare-job-sno132   1/1           7s         12m
+kube-compare-job-sno133   1/1           6s         12m
+kube-compare-job-sno146   1/1           6s         12m
 
-# oc logs -f cluster-compare-reporter-sno146-2zhd9
+# oc logs -f kube-compare-job-sno146-2zhd9
 ---------------------- comparing cluster: sno146 with metadata.yaml ----------------------
 NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
 version   4.16.12   True        False         20d     Cluster version is 4.16.12
@@ -115,9 +115,9 @@ If you only have permission to a particular spoke cluster:
 
 # oc get jobs
 NAME                       COMPLETIONS   DURATION   AGE
-cluster-compare-reporter   1/1           8s         12m
+kube-compare-job   1/1           8s         12m
 
-# oc logs -f cluster-compare-reporter-5sv98
+# oc logs -f kube-compare-job-5sv98
 ---------------------- comparing cluster with metadata.yaml ----------------------
 NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
 version   4.16.12   True        False         22d     Cluster version is 4.16.12

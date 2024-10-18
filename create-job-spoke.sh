@@ -3,7 +3,7 @@
 image=quay.io/bzhai/kube-compare-job:v20241018
 
 delete_job(){
-  oc delete job cluster-compare-reporter
+  oc delete job kube-compare-job
 }
 
 create_job(){
@@ -11,13 +11,13 @@ create_job(){
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cluster-compare-reporter
+  name: kube-compare-job
   namespace: default
 spec:
   template:
     spec:
       restartPolicy: Never
-      serviceAccountName: cluster-compare-reporter-sa
+      serviceAccountName: kube-compare-job-sa
       containers:
         - name: reporter
           image: $image
