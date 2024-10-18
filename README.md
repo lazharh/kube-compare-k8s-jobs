@@ -51,28 +51,46 @@ EOF
 Check logs:
 
 ```
-# oc get job
+# oc get job,pod
 
-# oc logs -f kube-compare-job-sno132-crqm6
----------------------- comparing cluster: sno132 with metadata.yaml ----------------------
+# oc logs -f kube-compare-job-sno131-crqm6
+---------------------- comparing cluster: sno131 with metadata.yaml ----------------------
 NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
-version   4.16.15   True        False         18d     Cluster version is 4.16.15
+version   4.16.10   True        False         43d     Cluster version is 4.16.10
 
-NS       NAME                                                           REMEDIATION ACTION   COMPLIANCE STATE   WAVE
-sno132   ztp-group-lb-du.lb-du-vdu-4.16.15-p4a1-config-operators        inform               Compliant          1
-sno132   ztp-group-lb-du.lb-du-vdu-4.16.15-p4a1-subscription-policy     inform               NonCompliant       2
-sno132   ztp-common.common-vdu-4.16.15-p4a1-config-policy               inform               Compliant          10
-sno132   ztp-group-lb-du.lb-du-vdu-4.16.15-p4a1-config-policy           inform               Compliant          100
-sno132   ztp-group-lb-du.lb-custom-common-config-custom-common-policy   inform               Compliant          200
+NS       NAME                                               REMEDIATION ACTION   COMPLIANCE STATE   WAVE
+sno131   ztp-vdu.vdu-base-vdu2-4.16.10-p1a1-catalogs        inform               Compliant          1
+...
+sno131   ztp-vdu.vdu-base-vdu2-4.16.10-p1a1-tuning          inform               Compliant          100
 
-W1015 18:09:32.500329     149 compare.go:496] There may be an issue with the API resources exposed by the cluster. Found kind but missing group/version for StorageClass.storage.k8s.io/v1
-W1015 18:09:33.213363     149 warnings.go:70] v1 is deprecated and should be removed in next three releases, use v2 instead
-W1015 18:09:33.218086     149 warnings.go:70] v1alpha1 is deprecated and should be removed in the next release, use v2 instead
-Summary
-CRs with diffs: 0/48
-No validation issues with the cluster
+running oc cluster-compare -r /kube-compare-reference/metadata.yaml:
+W1018 16:44:04.670031     117 correlator.go:137] More then one template with same apiVersion, metadata_name, metadata_namespace, kind. By Default for each Cluster CR that is correlated to one of these templates the template with the least number of diffs will be used. To use a different template for a specific CR specify it in the diff-config (-c flag) Template names are: optional/ptp-config/PtpConfigDualCardGmWpc.yaml, optional/ptp-config/PtpConfigGmWpc.yaml, optional/ptp-config/PtpConfigMaster.yaml, optional/ptp-config/PtpConfigMasterForEvent.yaml
+More then one template with same apiVersion, metadata_name, metadata_namespace, kind. By Default for each Cluster CR that is correlated to one of these templates the template with the least number of diffs will be used. To use a different template for a specific CR specify it in the diff-config (-c flag) Template names are: optional/ptp-config/PtpConfigForHA.yaml, optional/ptp-config/PtpConfigForHAForEvent.yaml
+More then one template with same apiVersion, metadata_name, metadata_namespace, kind. By Default for each Cluster CR that is correlated to one of these templates the template with the least number of diffs will be used. To use a different template for a specific CR specify it in the diff-config (-c flag) Template names are: optional/ptp-config/PtpConfigSlave.yaml, optional/ptp-config/PtpConfigSlaveForEvent.yaml
+More then one template with same apiVersion, metadata_name, metadata_namespace, kind. By Default for each Cluster CR that is correlated to one of these templates the template with the least number of diffs will be used. To use a different template for a specific CR specify it in the diff-config (-c flag) Template names are: optional/ptp-config/PtpConfigBoundary.yaml, optional/ptp-config/PtpConfigBoundaryForEvent.yaml
+More then one template with same apiVersion, metadata_name, metadata_namespace, kind. By Default for each Cluster CR that is correlated to one of these templates the template with the least number of diffs will be used. To use a different template for a specific CR specify it in the diff-config (-c flag) Template names are: required/sriov-operator/SriovOperatorConfig.yaml, required/sriov-operator/SriovOperatorConfigForSNO.yaml
+More then one template with same apiVersion, metadata_name, metadata_namespace, kind. By Default for each Cluster CR that is correlated to one of these templates the template with the least number of diffs will be used. To use a different template for a specific CR specify it in the diff-config (-c flag) Template names are: optional/ptp-config/PtpOperatorConfig.yaml, optional/ptp-config/PtpOperatorConfigForEvent.yaml
+W1018 16:44:04.673797     117 compare.go:496] There may be an issue with the API resources exposed by the cluster. Found kind but missing group/version for ClusterRoleBinding.rbac.authorization.k8s.io/v1, StorageClass.storage.k8s.io/v1
+W1018 16:44:04.673823     117 compare.go:425] Reference Contains Templates With Types (kind) Not Supported By Cluster: ClusterLogForwarder, LVMCluster, NMState, OperatorHub
+W1018 16:44:05.570070     117 warnings.go:70] v1 is deprecated and should be removed in next three releases, use v2 instead
+W1018 16:44:05.574327     117 warnings.go:70] v1alpha1 is deprecated and should be removed in the next release, use v2 instead
+**********************************
+
+Cluster CR: ptp.openshift.io/v1_PtpOperatorConfig_openshift-ptp_default
+Reference File: optional/ptp-config/PtpOperatorConfig.yaml
+Diff Output: diff -u -N /tmp/MERGED-3741765224/ptp-openshift-io-v1_ptpoperatorconfig_openshift-ptp_default /tmp/LIVE-4285408856/ptp-openshift-io-v1_ptpoperatorconfig_openshift-ptp_default
+--- /tmp/MERGED-3741765224/ptp-openshift-io-v1_ptpoperatorconfig_openshift-ptp_default	2024-10-18 16:44:05.294042033 +0000
++++ /tmp/LIVE-4285408856/ptp-openshift-io-v1_ptpoperatorconfig_openshift-ptp_default	2024-10-18 16:44:05.294042033 +0000
+@@ -6,3 +6,5 @@
+ spec:
+   daemonNodeSelector:
+     node-role.kubernetes.io/master: ""
++  ptpEventConfig:
++    enableEventPublisher: true
+...
+
 No CRs are unmatched to reference CRs
-Metadata Hash: a6ef6ad91dce82dac63d75361130e72be9844c771014f8431152a80d32f2fb51
+Metadata Hash: 512a9bf2e57fd5a5c44bbdea7abb3ffd7739d4a1f14ef9021f6793d5cdf868f0
 No patched CRs
 ```
 
@@ -89,25 +107,12 @@ kube-compare-job-sno133   1/1           6s         12m
 kube-compare-job-sno146   1/1           6s         12m
 
 # oc logs -f kube-compare-job-sno146-2zhd9
----------------------- comparing cluster: sno146 with metadata.yaml ----------------------
-NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
-version   4.16.12   True        False         20d     Cluster version is 4.16.12
-
-NS       NAME                                                           REMEDIATION ACTION   COMPLIANCE STATE   WAVE
-sno146   ztp-group-lb-du.lb-du-vdu-4.16.12-p3a10-config-operators       inform               Compliant          1
-sno146   ztp-group-lb-du.lb-du-vdu-4.16.12-p3a10-subscription-policy    inform               NonCompliant       2
-sno146   ztp-common.common-vdu-4.16.12-p3a10-config-policy              inform               Compliant          10
-sno146   ztp-group-lb-du.lb-du-vdu-4.16.12-p3a10-config-policy          inform               Compliant          100
-sno146   ztp-group-lb-du.lb-custom-common-config-custom-common-policy   inform               Compliant          200
-
-W1015 18:09:33.573667     132 compare.go:496] There may be an issue with the API resources exposed by the cluster. Found kind but missing group/version for StorageClass.storage.k8s.io/v1
-W1015 18:09:34.358206     132 warnings.go:70] v1 is deprecated and should be removed in next three releases, use v2 instead
-W1015 18:09:34.362751     132 warnings.go:70] v1alpha1 is deprecated and should be removed in the next release, use v2 instead
+...
 Summary
 CRs with diffs: 0/48
 No validation issues with the cluster
 No CRs are unmatched to reference CRs
-Metadata Hash: a6ef6ad91dce82dac63d75361130e72be9844c771014f8431152a80d32f2fb51
+Metadata Hash: 512a9bf2e57fd5a5c44bbdea7abb3ffd7739d4a1f14ef9021f6793d5cdf868f0
 No patched CRs
 ```
 
@@ -129,14 +134,11 @@ version   4.16.12   True        False         22d     Cluster version is 4.16.12
 
 NS       NAME                                                           REMEDIATION ACTION   COMPLIANCE STATE   WAVE
 sno146   ztp-group-lb-du.lb-du-vdu-4.16.12-p3a10-config-operators       inform               Compliant          1
-sno146   ztp-group-lb-du.lb-du-vdu-4.16.12-p3a10-subscription-policy    inform               NonCompliant       2
-sno146   ztp-common.common-vdu-4.16.12-p3a10-config-policy              inform               Compliant          10
-sno146   ztp-group-lb-du.lb-du-vdu-4.16.12-p3a10-config-policy          inform               Compliant          100
+...
 sno146   ztp-group-lb-du.lb-custom-common-config-custom-common-policy   inform               Compliant          200
 
-W1017 17:03:36.118518     188 compare.go:496] There may be an issue with the API resources exposed by the cluster. Found kind but missing group/version for StorageClass.storage.k8s.io/v1
-W1017 17:03:36.285262     188 warnings.go:70] v1 is deprecated and should be removed in next three releases, use v2 instead
-W1017 17:03:36.289071     188 warnings.go:70] v1alpha1 is deprecated and should be removed in the next release, use v2 instead
+...
+
 Summary
 CRs with diffs: 0/48
 No validation issues with the cluster
