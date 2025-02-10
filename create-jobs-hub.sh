@@ -1,6 +1,6 @@
 #!/bin/bash
 
-image=quay.io/bzhai/kube-compare-job:v20241018
+image=quay.io/lhalleb/kube-compare-job:latest
 
 usage(){
   echo "Usage :   $0 <spoke cluster>"
@@ -11,22 +11,23 @@ usage(){
 
 delete_job(){
   spoke=$1
-  oc delete job kube-compare-job-$spoke
+  oc delete job kube-compare-job -n $spoke
 }
 
 create_job(){
   spoke=$1
+  #refver=$2
   cat <<EOF | oc apply -f -
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: kube-compare-job-$spoke
-  namespace: default
+  name: kube-compare-job
+  namespace: $spoke
 spec:
   template:
     spec:
       restartPolicy: Never
-      serviceAccountName: kube-compare-job-sa
+      serviceAccountName: jobrunner
       containers:
         - name: reporter
           image: $image
@@ -34,6 +35,7 @@ spec:
           command: ["/reporter-hub.sh"]
           args:
             - $spoke
+            #- $refver
   backoffLimit: 2
 
 EOF
@@ -52,6 +54,6 @@ if [ $# -lt 1 ]; then
     create_job $spoke
   done
 else
-  delete_job $spoke
+  delete_job $1
   create_job $1
 fi
