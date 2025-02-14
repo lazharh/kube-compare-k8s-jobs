@@ -9,10 +9,10 @@ if [ $(oc get managedcluster.cluster.open-cluster-management.io   |grep $spoke |
   echo "---------------------- comparing cluster: $spoke with $metadata ----------------------"
   oc get secret -n ${spoke} ${spoke}-admin-kubeconfig -o jsonpath={.data.kubeconfig} |base64 -d > kubeconfig-${spoke}.yaml
   export KUBECONFIG=kubeconfig-${spoke}.yaml
-  echo "cluster info:"
 
-  #export theVersion=$(oc get clusterversion version -ojsonpath='{.spec.desiredUpdate.version}')
-  export theVersion=$(oc get clusterversion version | grep -v ^NAME | awk '{print $2}')
+  #export theVersion=$(oc get clusterversion version | grep -v ^NAME | awk '{print $2}')
+  export theVersion=$(oc get clusterversion version -o json | jq -r '.status.history[0].version')
+  echo "cluster info:"
   echo $theVersion
   export refver=$(echo $theVersion | awk -F"." '{print $1"."$2}')
   echo
@@ -21,7 +21,10 @@ if [ $(oc get managedcluster.cluster.open-cluster-management.io   |grep $spoke |
   echo "all policies applied on the cluster sorted by wave:"
   oc get policy -A -o=custom-columns=NS:.metadata.namespace,NAME:.metadata.name,"REMEDIATION ACTION":.spec.remediationAction,"COMPLIANCE STATE":.status.compliant,WAVE:.metadata.annotations."ran\.openshift\.io\/ztp-deploy-wave" --sort-by={.metadata.annotations."ran\.openshift\.io\/ztp-deploy-wave"}
   echo
+  echo "==========================================================="
   echo "running oc cluster-compare -r /reference${refver}/$metadata:"
+  echo "==========================================================="
+  echo
   #ls -l /reference${refver}/
   export PATH=/usr/local/bin/:$PATH
   #oc cluster-compare -h
