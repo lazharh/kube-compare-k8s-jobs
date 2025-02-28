@@ -1,10 +1,10 @@
 ARG BASE_IMAGE
 BASE_IMAGE=registry.redhat.io/openshift4/ose-cli:latest
-#FROM registry.redhat.io/openshift4/kube-compare-artifacts-rhel9:latest as comparetool
-FROM  registry-proxy.engineering.redhat.com/rh-osbs/openshift-kube-compare-artifacts:v4.18 as comparetool
+FROM registry.redhat.io/openshift4/kube-compare-artifacts-rhel9:latest as comparetool
+#FROM  registry-proxy.engineering.redhat.com/rh-osbs/openshift-kube-compare-artifacts:v4.18 as comparetool
 FROM registry.redhat.io/openshift4/ztp-site-generate-rhel8:v4.14 as rds414
-#FROM registry.redhat.io/openshift4/ztp-site-generate-rhel8:v4.16 as rds416 #reference folder does not exist
-#FROM registry.redhat.io/openshift4/ztp-site-generate-rhel8:v4.18 as rds418 #to come when 4.18 is GA
+#FROM registry.redhat.io/openshift4/ztp-site-generate-rhel8:v4.16 as rds416
+FROM registry.redhat.io/openshift4/ztp-site-generate-rhel8:v4.18 as rds418
 
 #FROM ${BASE_IMAGE}
 #
@@ -18,11 +18,12 @@ FROM registry.redhat.io/openshift4/ztp-site-generate-rhel8:v4.14 as rds414
 #    && oc cluster-compare -h
 
 FROM ${BASE_IMAGE}
+RUN dnf install jq -y
 COPY --from=comparetool /usr/share/openshift/linux_amd64/kube-compare.rhel8 /usr/local/bin/oc-cluster_compare
 #can COPY --from=comparetool /usr/share/openshift/linux_amd64/kube-compare.rhel9 /usr/local/bin/oc-cluster_compare
 COPY --from=rds414 /home/ztp/reference  /reference4.14
-#COPY --from=rds416 /home/ztp/reference  /reference4.1 #reference folder does not exist6
-#COPY --from=rds418 /home/ztp/reference  /reference4.18 #to come when 4.18 is GA
+#COPY --from=rds416 /home/ztp/reference  /reference4.16
+COPY --from=rds418 /home/ztp/reference  /reference4.18
 
 COPY reporter-hub.sh reporter-hub.sh
 COPY reporter-spoke.sh reporter-spoke.sh
